@@ -20,6 +20,13 @@ class Post {
         return response.rows.map(p => new Post(p));
     }
 
+    static async findById(id) {
+        const response = await db.query("SELECT * FROM posts WHERE post_id = $1;", [id]);
+        if (response.rows.length != 1) {
+            throw new Error("Cannot find post.");
+        }
+        return new Post(response.rows[0]);
+    }
 
 }
 

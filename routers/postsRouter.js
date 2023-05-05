@@ -2,11 +2,14 @@ const { Router } = require("express");
 
 const postsController = require("../controllers/postsController");
 
-const postRouter = Router();
+const postsRouter = Router();
 
-postRouter
+postsRouter
     .route("/")
     .get(postsController.index);
 
+postsRouter
+    .route("/:id")
+    .get(postsController.show);
 
-module.exports = postRouter;
+module.exports = postsRouter;

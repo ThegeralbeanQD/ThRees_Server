@@ -39,9 +39,16 @@ class Post {
         } else {
             throw new Error("A post with this title already exists.");
         }
-
     }
 
+    async update(data) {
+        const { post_title, post_content, post_category, post_image } = data;
+        const response = await db.query("UPDATE posts SET post_title = $1, post_content = $2, post_category = $3, post_image = $4 WHERE post_id = $5 RETURNING post_title, post_content, post_category, post_image;", [post_title, post_content, post_category, post_image, this.id]);
+        if (response.rows.length != 1) {
+            throw new Error("Cannot update post.")
+        }
+        return new Post(response.rows[0]);
+    }
 }
 
 module.exports = Post;

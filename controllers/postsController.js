@@ -21,12 +21,25 @@ const show = async (req, res) => {
 
 const create = async (req, res) => {
     try {
-        const post = await Post.create(req.body);
+        const data = req.body;
+        const post = await Post.create(data);
         res.status(201).send(post);
     } catch (err) {
         res.status(409).send({ "error": err.message });
     }
 }
 
-module.exports = { index, show, create }
+const update = async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        const data = req.body;
+        const post = await Post.findById(id);
+        const result = await post.update(data);
+        res.status(200).send(result);
+    } catch (err) {
+        res.status(404).send({ "error": err.message });
+    }
+}
+
+module.exports = { index, show, create, update }
 

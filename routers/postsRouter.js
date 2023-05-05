@@ -11,6 +11,7 @@ postsRouter
 
 postsRouter
     .route("/:id")
-    .get(postsController.show);
+    .get(postsController.show)
+    .patch(postsController.update);
 
 module.exports = postsRouter;

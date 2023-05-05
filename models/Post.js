@@ -49,6 +49,14 @@ class Post {
         }
         return new Post(response.rows[0]);
     }
+
+    async destroy() {
+        const response = await db.query("DELETE FROM posts WHERE post_id = $1 RETURNING *;", [this.id]);
+        if (response.rows.length != 1) {
+            throw new Error("Cannot delete post.");
+        }
+        return new Post(response.rows[0]);
+    }
 }
 
 module.exports = Post;

@@ -12,6 +12,7 @@ postsRouter
 postsRouter
     .route("/:id")
     .get(postsController.show)
-    .patch(postsController.update);
+    .patch(postsController.update)
+    .delete(postsController.destroy);
 
 module.exports = postsRouter;

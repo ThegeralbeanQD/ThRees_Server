@@ -41,5 +41,16 @@ const update = async (req, res) => {
     }
 }
 
-module.exports = { index, show, create, update }
+const destroy = async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        const post = await Post.findById(id);
+        const result = await post.destroy();
+        res.status(204).send(result);
+    } catch (err) {
+        res.status(404).send({ "error": err.message });
+    }
+}
+
+module.exports = { index, show, create, update, destroy }
 

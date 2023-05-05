@@ -17,6 +17,6 @@ app.get("/", (req, res) => {
     })
 })
 
-api.use("/posts", postsRouter);
+app.use("/posts", postsRouter);
 
 module.exports = app;

@@ -6,7 +6,7 @@ const postRouter = Router();
 
 postRouter
     .route("/")
-    .get("/", postsController.index);
+    .get(postsController.index);
 
 
 module.exports = postRouter;

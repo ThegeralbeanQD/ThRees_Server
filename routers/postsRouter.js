@@ -6,7 +6,8 @@ const postsRouter = Router();
 
 postsRouter
     .route("/")
-    .get(postsController.index);
+    .get(postsController.index)
+    .post(postsController.create);
 
 postsRouter
     .route("/:id")

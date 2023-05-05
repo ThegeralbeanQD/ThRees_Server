@@ -19,5 +19,14 @@ const show = async (req, res) => {
     }
 }
 
-module.exports = { index, show }
+const create = async (req, res) => {
+    try {
+        const post = await Post.create(req.body);
+        res.status(201).send(post);
+    } catch (err) {
+        res.status(409).send({ "error": err.message });
+    }
+}
+
+module.exports = { index, show, create }
 

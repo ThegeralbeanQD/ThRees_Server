@@ -64,7 +64,8 @@ INSERT INTO users (user_username, user_password, user_postcode)
 VALUES 
 ('First User', 'pass1', 'PCODE1'),
 ('Second User', 'pass2', 'PCODE2'),
-('Third User', 'pass3', 'PCODE3');
+('Third User', 'pass3', 'PCODE3'),
+('Forth User', 'pass3', 'PCODE4');
 
 INSERT INTO posts (post_title, post_content, post_category, image, post_user_id)
 VALUES 
@@ -78,13 +79,15 @@ INSERT INTO waste (waste_postcode)
 VALUES 
 ('PCODE1'),
 ('PCODE2'),
-('PCODE3');
+('PCODE3'),
+('PCODE4');
 
 INSERT INTO recycling (recycling_waste_id, recycling_days, recycling_last_collection)
 VALUES 
 (1, 7, '2023-05-03'),
 (2, 7, '2023-05-03'),
-(3, 18, '2023-04-29');
+(3, 18, '2023-04-29'),
+(4, 18, '2023-04-29');
 
 INSERT INTO general (general_waste_id, general_days, general_last_collection)
 VALUES 

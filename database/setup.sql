@@ -19,7 +19,7 @@ CREATE TABLE posts (
     post_title VARCHAR (100) NOT NULL,
     post_content VARCHAR (100) NOT NULL,
     post_category VARCHAR (100) NOT NULL,
-    image VARCHAR (100),
+    post_image VARCHAR (100),
     post_time TIME DEFAULT CURRENT_TIME,
     post_date DATE DEFAULT CURRENT_DATE,
     post_user_id INT,
@@ -66,7 +66,7 @@ VALUES
 ('Second User', 'pass2', 'PCODE2'),
 ('Third User', 'pass3', 'PCODE3');
 
-INSERT INTO posts (post_title, post_content, post_category, image, post_user_id)
+INSERT INTO posts (post_title, post_content, post_category, post_image, post_user_id)
 VALUES 
 ('How to Recycle Electronic Devices', 'CONTENT 2', 'Environment', 'electronics-recycling.jpg', 1),
 ('Recycling 101: The Basics', 'CONTENT 2', 'Paper', NULL, 2),

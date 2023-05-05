@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const logger = require('morgan');
 
+const postsRouter = require('./routers/postsRouter');
+
 const app = express();
 
 app.use(cors());
@@ -14,5 +16,7 @@ app.get("/", (req, res) => {
         description: "Renew Reuse Recycle"
     })
 })
+
+api.use("/posts", postsRouter);
 
 module.exports = app;

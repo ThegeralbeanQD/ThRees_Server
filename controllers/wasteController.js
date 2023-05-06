@@ -23,7 +23,45 @@ async function show (req, res) {
 async function createRecycle (req, res) {
     try {
         const data = req.body;
-        const waste = await Waste.createRecycle(data);
+        console.log(data.waste_postcode);
+        const id = await Waste.createNewPostcode(data.waste_postcode)
+        console.log(id);
+        const waste = await Waste.createRecycle(data, id);
+        res.json(waste);
+    } catch (err) {
+        res.status(404).json({"error": err.message})
+    }
+}
+
+async function createGeneral (req, res) {
+    try {
+        const data = req.body;
+        console.log(data.waste_postcode);
+        const id = await Waste.createNewPostcode(data.waste_postcode)
+        const waste = await Waste.createGeneral(data, id);
+        res.json(waste);
+    } catch (err) {
+        res.status(404).json({"error": err.message})
+    }
+}
+
+async function createCompost (req, res) {
+    try {
+        const data = req.body;
+        console.log(data.waste_postcode);
+        const id = await Waste.createNewPostcode(data.waste_postcode)
+        const waste = await Waste.createCompost(data, id);
+        res.json(waste);
+    } catch (err) {
+        res.status(404).json({"error": err.message})
+    }
+}
+async function createAll (req, res) {
+    try {
+        const data = req.body;
+        console.log(data.waste_postcode);
+        const id = await Waste.createNewPostcode(data.waste_postcode)
+        const waste = await Waste.createAll(data, id);
         res.json(waste);
     } catch (err) {
         res.status(404).json({"error": err.message})
@@ -31,5 +69,5 @@ async function createRecycle (req, res) {
 }
 
 module.exports = {
-    index, show, createRecycle
+    index, show, createRecycle, createGeneral, createCompost, createAll
 }

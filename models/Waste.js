@@ -48,7 +48,6 @@ class Waste {
         return await Waste.getOneByPostcode(id);
     }
     static async createRecycle(data, id) {
-        console.log(data);
         return await Waste.insertWasteData('recycling', { days: data.recycling_days, last_collection: data.recycling_last_collection }, id);
 
     }
@@ -69,13 +68,18 @@ class Waste {
     }
 
 
-    static async update(data, id) {
-        const response = await db.query(`UPDATE snack SET votes = votes + $1 WHERE snack_id = $2 RETURNING snack_id, snack_name, votes;`,
-            [data.votes, id]);
-        if (response.rows.length != 1) {
-            throw new Error("Unable to update votes.")
-        }
-        return new Snack(response.rows[0]);
+    static async updateData(data, id) {
+        // const response = await db.query(`UPDATE snack SET votes = votes + $1 WHERE snack_id = $2 RETURNING snack_id, snack_name, votes;`,
+        //     [data.votes, id]);
+        // if (response.rows.length != 1) {
+        //     throw new Error("Unable to update votes.")
+        // }
+        // return new Snack(response.rows[0]);
+
+        const { days: wasteTypeDays, last_collection: WasteTypeLastCollection } = data;
+        const response = await db.query(`UPDATE ${wasteType} SET ${wasteType}_days = $1, ${wasteType}_last_collection = $2`,
+            [wasteTypeDays, WasteTypeLastCollection, id]);
+        return await Waste.getOneByPostcode(id);
     }
 
     // static async destroy(data) {

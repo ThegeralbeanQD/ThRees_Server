@@ -31,6 +31,19 @@ async function createAll (req, res) {
     }
 }
 
+async function update (req, res) {
+    try {
+        const postcode = req.params.postcode;
+        const wasteId = await Waste.getId(postcode);
+        const typeId = await Waste.getTypeId(postcode);
+
+        const data = await Waste.getOneByPostcode(wasteId);
+        res.json(waste);
+    } catch (err) {
+        res.status(409).json({"error": err.message})
+    }
+}
+
 module.exports = {
     index, show, createAll
 }

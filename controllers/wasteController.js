@@ -23,12 +23,11 @@ async function show (req, res) {
 async function createAll (req, res) {
     try {
         const data = req.body;
-        console.log(data.waste_postcode);
         const id = await Waste.createNewPostcode(data.waste_postcode)
         const waste = await Waste.createAll(data, id);
         res.json(waste);
     } catch (err) {
-        res.status(404).json({"error": err.message})
+        res.status(409).json({"error": err.message})
     }
 }
 

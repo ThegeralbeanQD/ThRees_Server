@@ -29,7 +29,7 @@ CREATE TABLE posts (
 
 CREATE TABLE waste (
     waste_id INT GENERATED ALWAYS AS IDENTITY,
-    waste_postcode VARCHAR (10) NOT NULL,
+    waste_postcode VARCHAR (10) UNIQUE NOT NULL,
     PRIMARY KEY (waste_id)
 );
 

@@ -31,17 +31,20 @@ class Waste {
     }
 
     static async createNewPostcode(postcode) {
+        const exsists = await db.query('SELECT COUNT(*) FROM waste WHERE waste_postcode = $1', [postcode]);
+        if (parseInt(exsists.rows[0].count) > 0){
+            throw new Error("Postcode exists")
+        }
         let NewPostcode = await db.query(`INSERT INTO waste (waste_postcode) VALUES ($1) RETURNING waste_id`,
             [postcode]);
         const newId = parseInt(NewPostcode.rows[0].waste_id);
         return newId;
     }
     
-    static async insertWasteData(waste_type, data, id) {
-        console.log(data);
-        const { days: tableDays, last_collection: tableLastCollection } = data;
-        const response = await db.query(`INSERT INTO ${waste_type} (${waste_type}_days, ${waste_type}_last_collection, ${waste_type}_waste_id) VALUES ($1, $2, $3)`,
-            [tableDays, tableLastCollection, id]);
+    static async insertWasteData(wasteType, data, id) {
+        const { days: wasteTypeDays, last_collection: WasteTypeLastCollection } = data;
+        const response = await db.query(`INSERT INTO ${wasteType} (${wasteType}_days, ${wasteType}_last_collection, ${wasteType}_waste_id) VALUES ($1, $2, $3)`,
+            [wasteTypeDays, WasteTypeLastCollection, id]);
         return await Waste.getOneByPostcode(id);
     }
     static async createRecycle(data, id) {

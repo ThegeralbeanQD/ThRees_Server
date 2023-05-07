@@ -19,7 +19,7 @@ CREATE TABLE posts (
     post_title VARCHAR (100) NOT NULL,
     post_content VARCHAR (100) NOT NULL,
     post_category VARCHAR (100) NOT NULL,
-    post_image VARCHAR (100),
+    post_image bytea,
     post_time TIME DEFAULT CURRENT_TIME,
     post_date DATE DEFAULT CURRENT_DATE,
     post_user_id INT,

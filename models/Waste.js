@@ -70,11 +70,11 @@ class Waste {
         const { days: wasteTypeDays, last_collection: wasteTypeLastCollection } = data;
         const existingData = await db.query(`SELECT * FROM ${wasteType} WHERE ${wasteType}_waste_id = $1`, [id]);
         if (existingData.rows.length != 1) {
-            const makeData = await db.query(`INSERT INTO ${wasteType} (${wasteType}_days, ${wasteType}_last_collection, ${wasteType}_waste_id) VALUES ($1, $2, $3)`,
+            await db.query(`INSERT INTO ${wasteType} (${wasteType}_days, ${wasteType}_last_collection, ${wasteType}_waste_id) VALUES ($1, $2, $3)`,
             [wasteTypeDays, wasteTypeLastCollection, id]);
             return await Waste.getOneById(id);
         } else {
-            const response = await db.query(`UPDATE ${wasteType} SET ${wasteType}_days = $1, ${wasteType}_last_collection = $2 WHERE ${wasteType}_waste_id = $3`,
+            await db.query(`UPDATE ${wasteType} SET ${wasteType}_days = $1, ${wasteType}_last_collection = $2 WHERE ${wasteType}_waste_id = $3`,
             [wasteTypeDays, wasteTypeLastCollection, id]);
             return await Waste.getOneById(id);
         }
@@ -94,15 +94,31 @@ class Waste {
         return await Waste.getOneById(id);
     }
 
+    static async destroyWasteData(wasteType, id) {
+        await db.query(`DELETE FROM ${wasteType} WHERE ${wasteType}_waste_id = $1;`, [id]);
+        return await Waste.getOneById(id)
+    }
 
-    // static async destroy(data) {
-    //     console.log(data);
-    //     const response = await db.query('DELETE FROM diaries WHERE snack_id = $1 RETURNING *;', [data.id]);
-    //     if (response.rows.length != 1) {
-    //         throw new Error("Unable to delete entry.")
-    //     }
-    //     return new Snack(response.rows[0]);
-    // }
+
+    static async destroy(id) {
+        let response = await Waste.destroyWasteData('recycling', id);
+        if (response.rows.length != 1) {
+            throw new Error("Unable to delete rcycling data.")
+        }
+        response = await Waste.destroyWasteData('general', id);
+        if (response.rows.length != 1) {
+            throw new Error("Unable to delete general data.")
+        }
+        response = await Waste.destroyWasteData('compost', id);
+        if (response.rows.length != 1) {
+            throw new Error("Unable to delete compost data.")
+        }
+        response = await db.query('DELETE FROM waste WHERE waste_id = $1 RETURNING *;', [id]);
+        if (response.rows.length != 1) {
+            throw new Error("Unable to delete waste data with this ID.")
+        }
+        return new Waste(response.rows[0]);
+    }
 }
 
 module.exports = Waste

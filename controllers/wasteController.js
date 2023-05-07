@@ -46,6 +46,18 @@ async function update (req, res) {
     }
 }
 
+async function destroy (req, res) {
+    try {
+        const userInput = req.params.postcode;
+        const postcode = (await Waste.correctPostcode(userInput)).toUpperCase();
+        const id = await Waste.getId(postcode);
+        const response = await Waste.destroy(id);
+        res.json(response);
+    } catch (err) {
+        res.status(400).json({"error": err.message})
+    }
+}
+
 module.exports = {
-    index, show, create, update
+    index, show, create, update, destroy
 }

@@ -9,6 +9,7 @@ wasteRouter.get("/", wasteController.index);
 wasteRouter.get("/:postcode", wasteController.show);
 wasteRouter.post("/", wasteController.create);
 wasteRouter.patch("/:postcode", wasteController.update);
+wasteRouter.delete("/:postcode", wasteController.destroy);
 
 
 module.exports = wasteRouter

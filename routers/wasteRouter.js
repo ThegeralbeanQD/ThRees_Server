@@ -7,7 +7,7 @@ const wasteRouter = Router();
 
 wasteRouter.get("/", wasteController.index);
 wasteRouter.get("/:postcode", wasteController.show);
-wasteRouter.post("/", wasteController.createAll);
+wasteRouter.post("/", wasteController.create);
 
 
 module.exports = wasteRouter

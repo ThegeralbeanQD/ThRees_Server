@@ -14,7 +14,7 @@ class Waste {
     static async getId(postcode) {
         const response = await db.query(`SELECT waste_id FROM waste WHERE waste_postcode = $1`, [postcode]);
         if (response.rows.length != 1) {
-            throw new Error("Unable to locate ID.")
+            throw new Error("Unable postcode does not match any IDs.")
         }
         return response.rows[0].waste_id;
     }
@@ -25,7 +25,7 @@ class Waste {
         FROM waste AS W LEFT JOIN recycling AS R ON W.waste_id = R.recycling_waste_id LEFT JOIN general AS G ON W.waste_id = G.general_waste_id LEFT JOIN compost AS C ON W.waste_id = C.compost_waste_id WHERE W.waste_id = $1`
             , [id])
         if (response.rows.length != 1) {
-            throw new Error("Unable to locate by postcode.")
+            throw new Error("Unable to locate by postcode by ID.")
         }
         return response.rows[0];
     }
@@ -47,20 +47,20 @@ class Waste {
             [wasteTypeDays, WasteTypeLastCollection, id]);
         return await Waste.getOneByPostcode(id);
     }
-    static async createRecycle(data, id) {
-        return await Waste.insertWasteData('recycling', { days: data.recycling_days, last_collection: data.recycling_last_collection }, id);
+    // static async createRecycle(data, id) {
+    //     return await Waste.insertWasteData('recycling', { days: data.recycling_days, last_collection: data.recycling_last_collection }, id);
 
-    }
+    // }
 
-    static async createGeneral(data, id) {
-        await Waste.insertWasteData('general', { days: data.general_days, last_collection: data.general_last_collection }, id);
-    }
+    // static async createGeneral(data, id) {
+    //     await Waste.insertWasteData('general', { days: data.general_days, last_collection: data.general_last_collection }, id);
+    // }
 
-    static async createCompost(data, id) {
-        await Waste.insertWasteData('compost', { days: data.compost_days, last_collection: data.compost_last_collection }, id);
-    }
+    // static async createCompost(data, id) {
+    //     await Waste.insertWasteData('compost', { days: data.compost_days, last_collection: data.compost_last_collection }, id);
+    // }
 
-    static async createAll(data, id) {
+    static async create(data, id) {
         await Waste.insertWasteData('recycling', { days: data.recycling_days, last_collection: data.recycling_last_collection }, id);
         await Waste.insertWasteData('general', { days: data.general_days, last_collection: data.general_last_collection }, id);
         await Waste.insertWasteData('compost', { days: data.compost_days, last_collection: data.compost_last_collection }, id);

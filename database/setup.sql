@@ -69,7 +69,7 @@ VALUES
 INSERT INTO posts (post_title, post_content, post_category, post_image, post_user_id)
 VALUES 
 ('How to Recycle Electronic Devices', 'CONTENT 2', 'Environment', 'electronics-recycling.jpg', 1),
-('Recycling 101: The Basics', 'CONTENT 2', 'Paper', NULL, 2),
+('Recycling 101: The Basics', 'CONTENT 2', 'Paper', 'paper.jpg', 2),
 ('The Benefits of Composting', 'CONTENT 3', 'Gardening', 'composting.jpg', 1),
 ('How to Recycle Plastic Bottles', 'CONTENT 4', 'Environment', 'plastic-bottles.jpg', 3),
 ('Creative Ideas for Upcycling', 'CONTENT 5', 'DIY', 'upcycling.jpg', 3);

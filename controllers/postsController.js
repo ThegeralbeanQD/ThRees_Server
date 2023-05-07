@@ -20,9 +20,10 @@ const show = async (req, res) => {
 }
 
 const create = async (req, res) => {
+    const { buffer } = req.file;
+    const data = req.body;
     try {
-        const data = req.body;
-        const post = await Post.create(data);
+        const post = await Post.create({ ...data, buffer });
         res.status(201).send(post);
     } catch (err) {
         res.status(409).send({ "error": err.message });

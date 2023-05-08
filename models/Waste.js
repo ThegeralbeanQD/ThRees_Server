@@ -1,4 +1,6 @@
 const db = require('../database/connect');
+const moment = require('moment');
+moment().format();
 
 class Waste {
     constructor({ waste_id, waste_postcode }) {
@@ -19,9 +21,8 @@ class Waste {
         return response.rows[0].waste_id;
     }
 
-
     static async getOneById(id) {
-        const response = await db.query(`SELECT W.waste_id, W.waste_postcode, R.recycling_days, R.recycling_last_collection, G.general_days, G.general_last_collection, C.compost_days, C.compost_last_collection 
+        const response = await db.query(`SELECT W.waste_id, W.waste_postcode, R.recycling_days, R.recycling_last_collection, R.recycling_next_collection, G.general_days, G.general_last_collection, G.general_next_collection, C.compost_days, C.compost_last_collection, C.compost_next_collection 
         FROM waste AS W LEFT JOIN recycling AS R ON W.waste_id = R.recycling_waste_id LEFT JOIN general AS G ON W.waste_id = G.general_waste_id LEFT JOIN compost AS C ON W.waste_id = C.compost_waste_id WHERE W.waste_id = $1`
             , [id])
         if (response.rows.length != 1) {
@@ -55,7 +56,7 @@ class Waste {
                 correctedPostcode += pcode[i];
             }
         }
-        return correctedPostcode;
+        return correctedPostcode.toUpperCase();
     }
 
     static async create(data, id) {
@@ -71,11 +72,11 @@ class Waste {
         const existingData = await db.query(`SELECT * FROM ${wasteType} WHERE ${wasteType}_waste_id = $1`, [id]);
         if (existingData.rows.length != 1) {
             await db.query(`INSERT INTO ${wasteType} (${wasteType}_days, ${wasteType}_last_collection, ${wasteType}_waste_id) VALUES ($1, $2, $3)`,
-            [wasteTypeDays, wasteTypeLastCollection, id]);
+                [wasteTypeDays, wasteTypeLastCollection, id]);
             return await Waste.getOneById(id);
         } else {
             await db.query(`UPDATE ${wasteType} SET ${wasteType}_days = $1, ${wasteType}_last_collection = $2 WHERE ${wasteType}_waste_id = $3`,
-            [wasteTypeDays, wasteTypeLastCollection, id]);
+                [wasteTypeDays, wasteTypeLastCollection, id]);
             return await Waste.getOneById(id);
         }
     }
@@ -103,7 +104,7 @@ class Waste {
     static async destroy(id) {
         let response = await Waste.destroyWasteData('recycling', id);
         if (response.rows.length != 1) {
-            throw new Error("Unable to delete rcycling data.")
+            throw new Error("Unable to delete recycling data.")
         }
         response = await Waste.destroyWasteData('general', id);
         if (response.rows.length != 1) {
@@ -119,6 +120,139 @@ class Waste {
         }
         return new Waste(response.rows[0]);
     }
+
+    // static async checkIfUpdated(data) {
+    //     const todayDate = moment(new Date('2023-08-25')).format('YYYY-MM-DD'); //Get todays date
+    //     const lastCollection = new Date(data.recycling_last_collection); //Get last wsate collection
+    //     const daysBetween = data.recycling_days // getting the days between collections
+
+    //     function addDays(date, days) {
+    //         date.setDate(date.getDate() + days);
+    //         return date;
+    //     } //Function which will add days to the last collection
+
+    //     const updatedCollection = addDays(lastCollection, daysBetween) //Variable that holds the new collection date
+    //     const newCollection = moment(addDays(lastCollection, daysBetween)).format('YYYY-MM-DD') //This formats into SQL from so that it can patch the date if needed
+    //     const originalCollection = moment(data.recycling_last_collection).format('YYYY-MM-DD') //This formats the original collection date
+
+
+    //     if (todayDate < newCollection) {
+    //         console.log(`next collection is on ${newCollection} last collection was ${originalCollection}`);
+    //     }  
+    //     else if (todayDate > newCollection) {
+    //         await db.query(`UPDATE recycling SET recycling_last_collection = '${newCollection}' WHERE recycling_waste_id = 1`)
+    //         console.log(`today is ${todayDate}, collection was on ${originalCollection}, next collection is ${newCollection}`);
+    //     }
+    //     else {
+    //         await db.query(`UPDATE recycling SET recycling_last_collection = '${originalCollection}' WHERE recycling_waste_id = 1`)
+    //         console.log(`collection is today`);
+    //     }
+
+    // }
+    // static async checkIfUpdated(data) {
+    //     const todayDate = moment(new Date('2024-06-29')).format('YYYY-MM-DD'); //Get todays date
+    //     const lastCollection = new Date(data.recycling_last_collection); //Get last waste collection
+    //     const daysBetween = data.recycling_days // getting the days between collections
+
+    //     function addDays(date, days) {
+    //         date.setDate(date.getDate() + days);
+    //         return new Date(date);
+    //     } //Function which will add days to the last collection
+
+    //     let updatedCollection = addDays(lastCollection, daysBetween) //Variable that holds the new collection date
+
+    //     let originalCollection = moment(data.recycling_last_collection).format('YYYY-MM-DD') //This formats the original collection date
+    //     let newCollection = moment(updatedCollection).format('YYYY-MM-DD') //This formats into SQL from so that it can patch the date if needed
+
+    //     while (moment(todayDate).diff(moment(updatedCollection), 'days') > daysBetween) {
+    //         updatedCollection = addDays(updatedCollection, daysBetween);
+    //         newCollection = moment(updatedCollection).format('YYYY-MM-DD');
+    //         originalCollection = moment(lastCollection).format('YYYY-MM-DD');
+    //     }
+
+    //     if (moment(todayDate).isSame(newCollection, 'day')) {
+    //         await db.query(`UPDATE recycling SET recycling_last_collection = '${originalCollection}' WHERE recycling_waste_id = 1`)
+    //         console.log(`collection is today`);
+    //     }
+    //     else if (moment(todayDate).isBefore(newCollection, 'day')) {
+    //         console.log(`next collection is on ${newCollection} last collection was ${originalCollection}`);
+    //     }
+    //     else {
+    //         await db.query(`UPDATE recycling SET recycling_last_collection = '${newCollection}' WHERE recycling_waste_id = 1`)
+    //         console.log(`today is ${todayDate}, collection was on ${originalCollection}, next collection is ${newCollection}`);
+    //     }
+
+    //     return Waste.getOneById(data.waste_id)
+    // }
+
+    // static async checkIfUpdated(data) {
+    //     const todayDate = moment(new Date('2024-06-27')).format('YYYY-MM-DD'); //Get todays date
+    //     const lastCollection = new Date(data.recycling_last_collection); //Get last waste collection
+    //     let nextCollection = data.recycling_next_collection;
+    //     const daysBetween = data.recycling_days // getting the days between collections
+        
+    //     function addDays(date, days) {
+    //         date.setDate(date.getDate() + days);
+    //         return new Date(date);
+    //     } //Function which will add days to the last collection
+
+    //     if (nextCollection == null){
+    //         nextCollection = await Waste.checkLastCollection(todayDate, lastCollection, daysBetween);
+    //         console.log(lastCollection);
+    //         nextCollection = addDays(nextCollection, daysBetween)
+    //         console.log(nextCollection);
+    //     }
+
+        // console.log(lastCollection, nextCollection);
+
+        // const updatedLastCollection = moment(getUpdated).format('YYYY-MM-DD')
+        // console.log(updatedLastCollection);
+
+
+        // let updatedCollection = addDays(lastCollection, daysBetween) //Variable that holds the new collection date
+
+        // let originalCollection = moment(data.recycling_last_collection).format('YYYY-MM-DD') //This formats the original collection date
+        // let newCollection = moment(updatedCollection).format('YYYY-MM-DD') //This formats into SQL from so that it can patch the date if needed
+
+        // while (moment(todayDate).diff(moment(updatedCollection), 'days') > daysBetween) {
+        //     updatedCollection = addDays(updatedCollection, daysBetween);
+        //     newCollection = moment(updatedCollection).format('YYYY-MM-DD');
+        //     originalCollection = moment(lastCollection).format('YYYY-MM-DD');
+        // }
+        
+        // if (moment(todayDate).isSame(updatedLastCollection, 'day')) {
+        //     await db.query(`UPDATE recycling SET recycling_last_collection = '${todayDate}' WHERE recycling_waste_id = 1`)
+        //     console.log(`collection is today`);
+        // }
+        // else if (moment(todayDate).isBefore(updatedLastCollection, 'day')) {
+        //     console.log(`next collection is on ${updatedLastCollection}`);
+        // }
+        // else {
+        //     const nextCollection = moment(addDays(getUpdated, daysBetween)).format('YYYY-MM-DD');
+        //     // await db.query(`UPDATE recycling SET recycling_last_collection = '${newCollection}' WHERE recycling_waste_id = 1`)
+        //     console.log(`today is ${todayDate}, collection was on ${updatedLastCollection}, next collection is ${nextCollection}`);
+        // }
+
+    //     return Waste.getOneById(data.waste_id)
+    // }
+
+    // static async checkLastCollection(todayDate, lastCollection, daysBetween){
+    //     console.log(todayDate, lastCollection, daysBetween);
+    //     function addDays(date, days) {
+    //         date.setDate(date.getDate() + days);
+    //         return new Date(date);
+    //     }
+
+    //     while (moment(todayDate).diff(moment(lastCollection), 'days') > daysBetween){
+    //         lastCollection = addDays(lastCollection, daysBetween)
+    //     }
+
+    //     return lastCollection
+    // }
+
+    
+
 }
+
 
 module.exports = Waste

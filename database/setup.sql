@@ -38,6 +38,7 @@ CREATE TABLE recycling (
     recycling_waste_id INT NOT NULL,
     recycling_days INT,
     recycling_last_collection DATE,
+    recycling_next_collection DATE,
     FOREIGN KEY (recycling_waste_id) REFERENCES waste(waste_id),
     PRIMARY KEY (recycling_id)
 );
@@ -47,6 +48,7 @@ CREATE TABLE general (
     general_waste_id INT NOT NULL,
     general_days INT,
     general_last_collection DATE,
+    general_next_collection DATE,
     FOREIGN KEY (general_waste_id) REFERENCES waste(waste_id),
     PRIMARY KEY (general_id)
 );
@@ -56,6 +58,7 @@ CREATE TABLE compost (
     compost_waste_id INT NOT NULL,
     compost_days INT,
     compost_last_collection DATE,
+    compost_next_collection DATE,
     FOREIGN KEY (compost_waste_id) REFERENCES waste(waste_id),
     PRIMARY KEY (compost_id)
 );

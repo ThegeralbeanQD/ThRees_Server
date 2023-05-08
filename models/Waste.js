@@ -121,33 +121,6 @@ class Waste {
         return new Waste(response.rows[0]);
     }
 
-    // static async checkIfUpdated(data) {
-    //     const todayDate = moment(new Date('2023-08-25')).format('YYYY-MM-DD'); //Get todays date
-    //     const lastCollection = new Date(data.recycling_last_collection); //Get last wsate collection
-    //     const daysBetween = data.recycling_days // getting the days between collections
-
-    //     function addDays(date, days) {
-    //         date.setDate(date.getDate() + days);
-    //         return date;
-    //     } //Function which will add days to the last collection
-
-    //     const updatedCollection = addDays(lastCollection, daysBetween) //Variable that holds the new collection date
-    //     const newCollection = moment(addDays(lastCollection, daysBetween)).format('YYYY-MM-DD') //This formats into SQL from so that it can patch the date if needed
-    //     const originalCollection = moment(data.recycling_last_collection).format('YYYY-MM-DD') //This formats the original collection date
-
-
-    //     if (todayDate < newCollection) {
-    //         console.log(`next collection is on ${newCollection} last collection was ${originalCollection}`);
-    //     }  
-    //     else if (todayDate > newCollection) {
-    //         await db.query(`UPDATE recycling SET recycling_last_collection = '${newCollection}' WHERE recycling_waste_id = 1`)
-    //         console.log(`today is ${todayDate}, collection was on ${originalCollection}, next collection is ${newCollection}`);
-    //     }
-    //     else {
-    //         await db.query(`UPDATE recycling SET recycling_last_collection = '${originalCollection}' WHERE recycling_waste_id = 1`)
-    //         console.log(`collection is today`);
-    //     }
-
     // }
     // static async checkIfUpdated(data) {
     //     const todayDate = moment(new Date('2024-06-29')).format('YYYY-MM-DD'); //Get todays date
@@ -185,45 +158,21 @@ class Waste {
     //     return Waste.getOneById(data.waste_id)
     // }
 
-    // static async checkIfUpdated(data) {
-    //     const todayDate = moment(new Date('2024-06-27')).format('YYYY-MM-DD'); //Get todays date
-    //     const lastCollection = new Date(data.recycling_last_collection); //Get last waste collection
-    //     let nextCollection = data.recycling_next_collection;
-    //     const daysBetween = data.recycling_days // getting the days between collections
+    static async checkIfUpdated(data) {
+        const todayDate = moment(new Date('2024-05-06')).format('YYYY-MM-DD'); //Get todays date
+        const lastCollection = new Date(data.recycling_last_collection); //Get last waste collection
+        const daysBetween = data.recycling_days // getting the days between collections
+
+        let updatedLastCollection = await Waste.checkLastCollection(todayDate, lastCollection, daysBetween);
+        updatedLastCollection = moment(updatedLastCollection).format('YYYY-MM-DD');
+        let nextCollection = moment(updatedLastCollection).add(daysBetween, 'days')
+        nextCollection = moment(nextCollection).format('YYYY-MM-DD')
+        console.log(todayDate, updatedLastCollection, nextCollection);
         
-    //     function addDays(date, days) {
-    //         date.setDate(date.getDate() + days);
-    //         return new Date(date);
-    //     } //Function which will add days to the last collection
-
-    //     if (nextCollection == null){
-    //         nextCollection = await Waste.checkLastCollection(todayDate, lastCollection, daysBetween);
-    //         console.log(lastCollection);
-    //         nextCollection = addDays(nextCollection, daysBetween)
-    //         console.log(nextCollection);
-    //     }
-
-        // console.log(lastCollection, nextCollection);
-
-        // const updatedLastCollection = moment(getUpdated).format('YYYY-MM-DD')
-        // console.log(updatedLastCollection);
-
-
-        // let updatedCollection = addDays(lastCollection, daysBetween) //Variable that holds the new collection date
-
-        // let originalCollection = moment(data.recycling_last_collection).format('YYYY-MM-DD') //This formats the original collection date
-        // let newCollection = moment(updatedCollection).format('YYYY-MM-DD') //This formats into SQL from so that it can patch the date if needed
-
-        // while (moment(todayDate).diff(moment(updatedCollection), 'days') > daysBetween) {
-        //     updatedCollection = addDays(updatedCollection, daysBetween);
-        //     newCollection = moment(updatedCollection).format('YYYY-MM-DD');
-        //     originalCollection = moment(lastCollection).format('YYYY-MM-DD');
-        // }
-        
-        // if (moment(todayDate).isSame(updatedLastCollection, 'day')) {
-        //     await db.query(`UPDATE recycling SET recycling_last_collection = '${todayDate}' WHERE recycling_waste_id = 1`)
-        //     console.log(`collection is today`);
-        // }
+        if (moment(todayDate).isSame(nextCollection, 'day')) {
+            // await db.query(`UPDATE recycling SET recycling_last_collection = '${todayDate}' WHERE recycling_waste_id = 1`)
+            console.log(`collection is today`);
+        }
         // else if (moment(todayDate).isBefore(updatedLastCollection, 'day')) {
         //     console.log(`next collection is on ${updatedLastCollection}`);
         // }
@@ -233,25 +182,21 @@ class Waste {
         //     console.log(`today is ${todayDate}, collection was on ${updatedLastCollection}, next collection is ${nextCollection}`);
         // }
 
-    //     return Waste.getOneById(data.waste_id)
-    // }
+        return Waste.getOneById(data.waste_id)
+    }
 
-    // static async checkLastCollection(todayDate, lastCollection, daysBetween){
-    //     console.log(todayDate, lastCollection, daysBetween);
-    //     function addDays(date, days) {
-    //         date.setDate(date.getDate() + days);
-    //         return new Date(date);
-    //     }
+    static async checkLastCollection(todayDate, lastCollection, daysBetween){
+        // console.log(todayDate, lastCollection, daysBetween);
+        function addDays(date, days) {
+            date.setDate(date.getDate() + days);
+            return new Date(date);
+        } //Function which will add days to the last collection
 
-    //     while (moment(todayDate).diff(moment(lastCollection), 'days') > daysBetween){
-    //         lastCollection = addDays(lastCollection, daysBetween)
-    //     }
-
-    //     return lastCollection
-    // }
-
-    
-
+        while (moment(todayDate).diff(moment(lastCollection), 'days') > daysBetween){
+            lastCollection = addDays(lastCollection, daysBetween)
+        }
+        return lastCollection
+    }
 }
 
 

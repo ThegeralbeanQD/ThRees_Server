@@ -2,7 +2,10 @@ const express = require('express');
 const cors = require('cors');
 const logger = require('morgan');
 
+
+const postsRouter = require('./routers/postsRouter');
 const wasteRouter = require('./routers/wasteRouter');
+
 
 const app = express();
 
@@ -18,5 +21,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/waste", wasteRouter);
+
+app.use("/posts", postsRouter);
 
 module.exports = app;

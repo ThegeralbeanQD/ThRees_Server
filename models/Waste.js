@@ -159,7 +159,7 @@ class Waste {
     // }
 
     static async checkIfUpdated(data) {
-        const todayDate = moment(new Date('2024-05-06')).format('YYYY-MM-DD'); //Get todays date
+        const todayDate = moment(new Date('2024-07-02')).format('YYYY-MM-DD'); //Get todays date
         const lastCollection = new Date(data.recycling_last_collection); //Get last waste collection
         const daysBetween = data.recycling_days // getting the days between collections
 
@@ -170,17 +170,16 @@ class Waste {
         console.log(todayDate, updatedLastCollection, nextCollection);
         
         if (moment(todayDate).isSame(nextCollection, 'day')) {
-            // await db.query(`UPDATE recycling SET recycling_last_collection = '${todayDate}' WHERE recycling_waste_id = 1`)
+            await db.query(`UPDATE recycling SET recycling_last_collection = '${todayDate}' WHERE recycling_waste_id = 1`)
             console.log(`collection is today`);
         }
-        // else if (moment(todayDate).isBefore(updatedLastCollection, 'day')) {
-        //     console.log(`next collection is on ${updatedLastCollection}`);
-        // }
-        // else {
-        //     const nextCollection = moment(addDays(getUpdated, daysBetween)).format('YYYY-MM-DD');
-        //     // await db.query(`UPDATE recycling SET recycling_last_collection = '${newCollection}' WHERE recycling_waste_id = 1`)
-        //     console.log(`today is ${todayDate}, collection was on ${updatedLastCollection}, next collection is ${nextCollection}`);
-        // }
+        else if (moment(todayDate).isBefore(updatedLastCollection, 'day')) {
+            console.log(`next collection is on ${nextCollection}`);
+        }
+        else {
+            await db.query(`UPDATE recycling SET recycling_last_collection = '${updatedLastCollection}' WHERE recycling_waste_id = 1`)
+            console.log(`today is ${todayDate}, collection was on ${updatedLastCollection}, next collection is ${nextCollection}`);
+        }
 
         return Waste.getOneById(data.waste_id)
     }

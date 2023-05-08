@@ -15,7 +15,7 @@ async function show (req, res) {
         const postcode = await Waste.correctPostcode(userInput);
         const id = await Waste.getId(postcode);
         const data = await Waste.getOneById(id);
-        const updatedData = await Waste.checkIfUpdated(data)
+        const updatedData = await Waste.autoUpdateData(data)
         res.status(200).json(updatedData);
     } catch (err) {
         res.status(404).json({"error": err.message})

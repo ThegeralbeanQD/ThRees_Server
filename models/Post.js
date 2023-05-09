@@ -30,10 +30,10 @@ class Post {
 
     static async findByCategory(category) {
         const response = await db.query("SELECT * FROM posts WHERE post_category = $1", [category]);
-        if (response.rows.length != 1) {
+        if (response.rows.length === 0) {
             throw new Error("Cannot find category.");
         }
-        return new Post(response.rows[0]);
+        return response.rows.map(p => new Post(p));
     }
 
     static async create(data) {

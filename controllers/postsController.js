@@ -1,4 +1,5 @@
 const Post = require("../models/Post");
+const capitalise = require("../helpers/capitalise");
 
 const index = async (req, res) => {
     try {
@@ -13,6 +14,17 @@ const show = async (req, res) => {
     try {
         const id = parseInt(req.params.id);
         const post = await Post.findById(id);
+        res.status(200).send(post);
+    } catch (err) {
+        res.status(404).send({ "error": err.message });
+    }
+}
+
+const showCategory = async (req, res) => {
+    try {
+        const category = capitalise(req.params.category);
+        console.log(category);
+        const post = await Post.findByCategory(category);
         res.status(200).send(post);
     } catch (err) {
         res.status(404).send({ "error": err.message });
@@ -53,5 +65,5 @@ const destroy = async (req, res) => {
     }
 }
 
-module.exports = { index, show, create, update, destroy }
+module.exports = { index, show, showCategory, create, update, destroy }
 

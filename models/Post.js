@@ -28,6 +28,14 @@ class Post {
         return new Post(response.rows[0]);
     }
 
+    static async findByCategory(category) {
+        const response = await db.query("SELECT * FROM posts WHERE post_category = $1", [category]);
+        if (response.rows.length != 1) {
+            throw new Error("Cannot find category.");
+        }
+        return new Post(response.rows[0]);
+    }
+
     static async create(data) {
         const { post_title, post_content, post_category, buffer } = data;
         const exists = await db.query("SELECT * FROM posts WHERE post_title = $1", [post_title]);

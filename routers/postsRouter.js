@@ -16,4 +16,9 @@ postsRouter
     .patch(postsController.update)
     .delete(postsController.destroy);
 
+postsRouter
+    .route("/search/:category")
+    .get(postsController.showCategory);
+
+
 module.exports = postsRouter;

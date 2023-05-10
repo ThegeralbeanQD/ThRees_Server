@@ -12,9 +12,6 @@ app.use(cors());
 app.use(express.json());
 app.use(logger('dev'));
 
-
-app.use('/api/users', usersRouter);
-
 const signupRouter = require('./routers/signup');
 app.use('/api/signup', signupRouter);
 
@@ -27,5 +24,6 @@ app.get("/", (req, res) => {
 
 app.use("/waste", wasteRouter);
 app.use("/posts", postsRouter);
+app.use('/users', usersRouter);
 
 module.exports = app;

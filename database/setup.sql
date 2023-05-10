@@ -2,9 +2,10 @@ DROP TABLE IF EXISTS posts;
 DROP TABLE IF EXISTS recycling;
 DROP TABLE IF EXISTS general;
 DROP TABLE IF EXISTS compost;
+DROP TABLE IF EXISTS tokens;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS wastes;
-DROP TABLE IF EXISTS tokens;
+
 
 CREATE TABLE users (
     user_id INT GENERATED ALWAYS AS IDENTITY,
@@ -69,15 +70,15 @@ CREATE TABLE tokens (
   token_user_id INT NOT NULL,
   token_token CHAR(36) UNIQUE NOT NULL,
   PRIMARY KEY (token_id),
-  FOREIGN KEY (token_user_id) REFERENCES users("user_id")
+  FOREIGN KEY (token_user_id) REFERENCES users(user_id)
 );
 
-INSERT INTO users (user_username, user_password, user_postcode)
+INSERT INTO users (user_username, user_password)
 VALUES 
-('First User', 'pass1', 'PCODE1'),
-('Second User', 'pass2', 'PCODE2'),
-('Third User', 'pass3', 'PCODE3'),
-('Forth User', 'pass3', 'PCODE4');
+('First User', 'pass1'),
+('Second User', 'pass2'),
+('Third User', 'pass3'),
+('Forth User', 'pass3');
 
 INSERT INTO posts (post_title, post_content, post_category, post_image, post_user_id)
 VALUES 

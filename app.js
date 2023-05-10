@@ -13,6 +13,12 @@ app.use(cors());
 app.use(express.json());
 app.use(logger('dev'));
 
+const usersRouter = require('./routes/users');
+app.use('/api/users', usersRouter);
+
+const signupRouter = require('./routes/signup');
+app.use('/api/signup', signupRouter);
+
 app.get("/", (req, res) => {
     res.json({
         name: "ThRee",

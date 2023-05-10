@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS general;
 DROP TABLE IF EXISTS compost;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS wastes;
+DROP TABLE IF EXISTS tokens;
 
 CREATE TABLE users (
     user_id INT GENERATED ALWAYS AS IDENTITY,
@@ -61,6 +62,14 @@ CREATE TABLE compost (
     compost_next_collection DATE,
     FOREIGN KEY (compost_waste_id) REFERENCES wastes(waste_id),
     PRIMARY KEY (compost_id)
+);
+
+CREATE TABLE tokens (
+  token_id INT GENERATED ALWAYS AS IDENTITY,
+  token_user_id INT NOT NULL,
+  token_token CHAR(36) UNIQUE NOT NULL,
+  PRIMARY KEY (token_id),
+  FOREIGN KEY (token_user_id) REFERENCES users("user_id")
 );
 
 INSERT INTO users (user_username, user_password, user_postcode)

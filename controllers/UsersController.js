@@ -1,4 +1,5 @@
 const Users = require("../models/User");
+const bcrypt = require('bcrypt');
 
 async function index(req, res) {
   try {
@@ -20,6 +21,11 @@ async function show(req, res) {
 
 async function create(req, res) {
   try {
+    const data = req.body;
+    const salt = await bcrypt.genSalt(parseInt(process.env.BCRYPT_SALT_ROUNDS));
+    data["user_password"] = await bcrypt.hash(data["user_password"], salt);
+    console.log(data);
+
     const newUser = await Users.create(req.body);
     res.status(201).json(newUser);
   } catch (error) {

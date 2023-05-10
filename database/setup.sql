@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS recycling;
 DROP TABLE IF EXISTS general;
 DROP TABLE IF EXISTS compost;
 DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS waste;
+DROP TABLE IF EXISTS wastes;
 
 CREATE TABLE users (
     user_id INT GENERATED ALWAYS AS IDENTITY,
@@ -19,7 +19,7 @@ CREATE TABLE posts (
     post_title VARCHAR (100) NOT NULL,
     post_content VARCHAR (100) NOT NULL,
     post_category VARCHAR (100) NOT NULL,
-    image VARCHAR (100),
+    post_image bytea,
     post_time TIME DEFAULT CURRENT_TIME,
     post_date DATE DEFAULT CURRENT_DATE,
     post_user_id INT,
@@ -27,7 +27,7 @@ CREATE TABLE posts (
     PRIMARY KEY (post_id)
 );
 
-CREATE TABLE waste (
+CREATE TABLE wastes (
     waste_id INT GENERATED ALWAYS AS IDENTITY,
     waste_postcode VARCHAR (10) UNIQUE NOT NULL,
     PRIMARY KEY (waste_id)
@@ -39,7 +39,7 @@ CREATE TABLE recycling (
     recycling_days INT,
     recycling_last_collection DATE,
     recycling_next_collection DATE,
-    FOREIGN KEY (recycling_waste_id) REFERENCES waste(waste_id),
+    FOREIGN KEY (recycling_waste_id) REFERENCES wastes(waste_id),
     PRIMARY KEY (recycling_id)
 );
 
@@ -49,7 +49,7 @@ CREATE TABLE general (
     general_days INT,
     general_last_collection DATE,
     general_next_collection DATE,
-    FOREIGN KEY (general_waste_id) REFERENCES waste(waste_id),
+    FOREIGN KEY (general_waste_id) REFERENCES wastes(waste_id),
     PRIMARY KEY (general_id)
 );
 
@@ -59,7 +59,7 @@ CREATE TABLE compost (
     compost_days INT,
     compost_last_collection DATE,
     compost_next_collection DATE,
-    FOREIGN KEY (compost_waste_id) REFERENCES waste(waste_id),
+    FOREIGN KEY (compost_waste_id) REFERENCES wastes(waste_id),
     PRIMARY KEY (compost_id)
 );
 
@@ -70,15 +70,15 @@ VALUES
 ('Third User', 'pass3', 'PCODE3'),
 ('Forth User', 'pass3', 'PCODE4');
 
-INSERT INTO posts (post_title, post_content, post_category, image, post_user_id)
+INSERT INTO posts (post_title, post_content, post_category, post_image, post_user_id)
 VALUES 
 ('How to Recycle Electronic Devices', 'CONTENT 2', 'Environment', 'electronics-recycling.jpg', 1),
-('Recycling 101: The Basics', 'CONTENT 2', 'Paper', NULL, 2),
+('Recycling 101: The Basics', 'CONTENT 2', 'Paper', 'paper.jpg', 2),
 ('The Benefits of Composting', 'CONTENT 3', 'Gardening', 'composting.jpg', 1),
 ('How to Recycle Plastic Bottles', 'CONTENT 4', 'Environment', 'plastic-bottles.jpg', 3),
 ('Creative Ideas for Upcycling', 'CONTENT 5', 'DIY', 'upcycling.jpg', 3);
 
-INSERT INTO waste (waste_postcode)
+INSERT INTO wastes (waste_postcode)
 VALUES 
 ('PCODE1'),
 ('PCODE2'),

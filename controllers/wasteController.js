@@ -25,7 +25,7 @@ async function show (req, res) {
 async function create (req, res) {
     try {
         const data = req.body;
-        const postcode = await Waste.correctPostcode(data.waste_postcode); 
+        const postcode = await Waste.correctPostcode(data.waste_postcode);
         const id = await Waste.createNewPostcode(postcode)
         const waste = await Waste.create(data, id);
         res.json(waste);

@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS recycling;
 DROP TABLE IF EXISTS general;
 DROP TABLE IF EXISTS compost;
 DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS waste;
+DROP TABLE IF EXISTS wastes;
 
 CREATE TABLE users (
     user_id INT GENERATED ALWAYS AS IDENTITY,
@@ -27,7 +27,7 @@ CREATE TABLE posts (
     PRIMARY KEY (post_id)
 );
 
-CREATE TABLE waste (
+CREATE TABLE wastes (
     waste_id INT GENERATED ALWAYS AS IDENTITY,
     waste_postcode VARCHAR (10) UNIQUE NOT NULL,
     PRIMARY KEY (waste_id)
@@ -39,7 +39,7 @@ CREATE TABLE recycling (
     recycling_days INT,
     recycling_last_collection DATE,
     recycling_next_collection DATE,
-    FOREIGN KEY (recycling_waste_id) REFERENCES waste(waste_id),
+    FOREIGN KEY (recycling_waste_id) REFERENCES wastes(waste_id),
     PRIMARY KEY (recycling_id)
 );
 
@@ -49,7 +49,7 @@ CREATE TABLE general (
     general_days INT,
     general_last_collection DATE,
     general_next_collection DATE,
-    FOREIGN KEY (general_waste_id) REFERENCES waste(waste_id),
+    FOREIGN KEY (general_waste_id) REFERENCES wastes(waste_id),
     PRIMARY KEY (general_id)
 );
 
@@ -59,7 +59,7 @@ CREATE TABLE compost (
     compost_days INT,
     compost_last_collection DATE,
     compost_next_collection DATE,
-    FOREIGN KEY (compost_waste_id) REFERENCES waste(waste_id),
+    FOREIGN KEY (compost_waste_id) REFERENCES wastes(waste_id),
     PRIMARY KEY (compost_id)
 );
 
@@ -78,7 +78,7 @@ VALUES
 ('How to Recycle Plastic Bottles', 'CONTENT 4', 'Environment', 'plastic-bottles.jpg', 3),
 ('Creative Ideas for Upcycling', 'CONTENT 5', 'DIY', 'upcycling.jpg', 3);
 
-INSERT INTO waste (waste_postcode)
+INSERT INTO wastes (waste_postcode)
 VALUES 
 ('PCODE1'),
 ('PCODE2'),

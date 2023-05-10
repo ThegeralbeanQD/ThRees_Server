@@ -12,7 +12,7 @@ async function index (req, res) {
 async function show (req, res) {
     try {
         const userInput = req.params.postcode;
-        const postcode = await Waste.correctPostcode(userInput);
+        const postcode = await Waste.correctPostcode(userInput); 
         const id = await Waste.getId(postcode);
         const data = await Waste.getOneById(id);
         const updatedData = await Waste.autoUpdateData(data)
@@ -25,10 +25,11 @@ async function show (req, res) {
 async function create (req, res) {
     try {
         const data = req.body;
-        const postcode = await Waste.correctPostcode(data.waste_postcode); 
+        console.log(data);
+        const postcode = await Waste.correctPostcode(data.waste_postcode);
         const id = await Waste.createNewPostcode(postcode)
         const waste = await Waste.create(data, id);
-        res.json(waste);
+        res.status(200).json(waste);
     } catch (err) {
         res.status(409).json({"error": err.message})
     }
@@ -41,7 +42,7 @@ async function update (req, res) {
         const id = await Waste.getId(postcode);
         const data = req.body;
         const waste = await Waste.update(data, id);
-        res.json(waste);
+        res.status(200).json(waste);
     } catch (err) {
         res.status(400).json({"error": err.message})
     }
@@ -53,7 +54,7 @@ async function destroy (req, res) {
         const postcode = await Waste.correctPostcode(userInput);
         const id = await Waste.getId(postcode);
         const response = await Waste.destroy(id);
-        res.json(response);
+        res.status(200).json(response);
     } catch (err) {
         res.status(400).json({"error": err.message})
     }

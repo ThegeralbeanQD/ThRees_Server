@@ -15,6 +15,7 @@ class Waste {
 
     static async getId(postcode) {
         const response = await db.query(`SELECT waste_id FROM wastes WHERE waste_postcode = $1`, [postcode]);
+
         if (response.rows.length != 1) {
             throw new Error("Unable postcode does not match any IDs.")
         }
@@ -25,6 +26,7 @@ class Waste {
         const response = await db.query(`SELECT W.waste_id, W.waste_postcode, R.recycling_days, R.recycling_last_collection, R.recycling_next_collection, G.general_days, G.general_last_collection, G.general_next_collection, C.compost_days, C.compost_last_collection, C.compost_next_collection 
         FROM wastes AS W LEFT JOIN recycling AS R ON W.waste_id = R.recycling_waste_id LEFT JOIN general AS G ON W.waste_id = G.general_waste_id LEFT JOIN compost AS C ON W.waste_id = C.compost_waste_id WHERE W.waste_id = $1`
             , [id])
+
         if (response.rows.length != 1) {
             throw new Error("Unable to locate by postcode by ID.")
         }
@@ -44,7 +46,7 @@ class Waste {
 
     static async insertWasteData(wasteType, data, id) {
         const { days: wasteTypeDays, last_collection: wasteTypeLastCollection } = data;
-        await db.query(`INSERT INTO ${wasteType} (${wasteType}_days, ${wasteType}_last_collection, ${wasteType}_waste_id) VALUES ($1, $2, $3)`,
+        const response = await db.query(`INSERT INTO ${wasteType} (${wasteType}_days, ${wasteType}_last_collection, ${wasteType}_waste_id) VALUES ($1, $2, $3)`,
             [wasteTypeDays, wasteTypeLastCollection, id]);
         return await Waste.getOneById(id);
     }
@@ -60,10 +62,15 @@ class Waste {
     }
 
     static async create(data, id) {
-        console.log(data);
-        await Waste.insertWasteData('recycling', { days: data.recycling_days, last_collection: data.recycling_last_collection }, id);
-        await Waste.insertWasteData('general', { days: data.general_days, last_collection: data.general_last_collection }, id);
-        await Waste.insertWasteData('compost', { days: data.compost_days, last_collection: data.compost_last_collection }, id);
+        if (data.recycling_days && data.recycling_last_collection) {
+            await Waste.insertWasteData('recycling', { days: data.recycling_days, last_collection: data.recycling_last_collection }, id);
+        }
+        if (data.general_days && data.general_last_collection) {
+            await Waste.insertWasteData('general', { days: data.general_days, last_collection: data.general_last_collection }, id);
+        }
+        if (data.compost_days && data.compost_last_collection) {
+            await Waste.insertWasteData('compost', { days: data.compost_days, last_collection: data.compost_last_collection }, id);
+        }
         return await Waste.getOneById(id);
     }
 
@@ -97,10 +104,7 @@ class Waste {
     }
 
     static async destroyWasteData(wasteType, id) {
-        const response = await db.query(`DELETE FROM ${wasteType} WHERE ${wasteType}_waste_id = $1 RETURNING *`, [id]);
-        if (response.rows.length != 1) {
-            throw new Error(`Unable to delete ${wasteType} data.`)
-        }
+        await db.query(`DELETE FROM ${wasteType} WHERE ${wasteType}_waste_id = $1;`, [id]);
         return await Waste.getOneById(id)
     }
 
@@ -109,20 +113,19 @@ class Waste {
         await Waste.destroyWasteData('recycling', id);
         await Waste.destroyWasteData('general', id);
         await Waste.destroyWasteData('compost', id);
-        await db.query('DELETE FROM waste WHERE waste_id = $1 RETURNING *;', [id]);
+        const response = await db.query('DELETE FROM wastes WHERE waste_id = $1 RETURNING *;', [id]);
         return new Waste(response.rows[0]);
     }
 
-
     static async autoUpdateData(data) {
         const id = data.waste_id
-        if (data.recycling_last_collection != null){
+        if (data.recycling_last_collection != null) {
             await Waste.checkIfUpdated('recycling', { days: data.recycling_days, last_collection: data.recycling_last_collection }, id);
         }
-        if (data.general_last_collection != null){
+        if (data.general_last_collection != null) {
             await Waste.checkIfUpdated('general', { days: data.general_days, last_collection: data.general_last_collection }, id);
         }
-        if (data.compost_last_collection != null){
+        if (data.compost_last_collection != null) {
             await Waste.checkIfUpdated('compost', { days: data.compost_days, last_collection: data.compost_last_collection }, id);
         }
         return await Waste.getOneById(id);
@@ -168,6 +171,7 @@ class Waste {
         }
         return lastCollection
     }
+
 }
 
 

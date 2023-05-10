@@ -73,12 +73,12 @@ CREATE TABLE tokens (
   FOREIGN KEY (token_user_id) REFERENCES users(user_id)
 );
 
-INSERT INTO users (user_username, user_password)
+INSERT INTO users (user_username, user_password, user_postcode)
 VALUES 
-('First User', 'pass1'),
-('Second User', 'pass2'),
-('Third User', 'pass3'),
-('Forth User', 'pass3');
+('First User', 'pass1', 'PCODE1'),
+('Second User', 'pass2', 'PCODE2'),
+('Third User', 'pass3', 'PCODE3'),
+('Forth User', 'pass3', 'PCODE4');
 
 INSERT INTO posts (post_title, post_content, post_category, post_image, post_user_id)
 VALUES 

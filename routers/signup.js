@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const { createUser } = require('../controllers/userController');
+const { create } = require('../controllers/usersController');
 
 // Set up Multer for handling file uploads- honestly so confused about all of this 
 const storage = multer.memoryStorage();
@@ -13,7 +13,7 @@ router.post('/', upload.single('profilePic'), async (req, res) => {
     const { name, postcode, password } = req.body;
     const profilePic = req.file.buffer;
 
-    const user = await createUser(name, postcode, password, profilePic);
+    const user = await create(name, postcode, password, profilePic);
     res.json(user);
   } catch (err) {
     console.error(err);

@@ -72,6 +72,18 @@ async function destroy(req, res) {
   }
 }
 
+async function destroyToken(req, res) {
+  try {
+    const token = req.params.token;
+    const deletedToken = await Token.destroy(token);
+    res.json(deletedToken);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+
+
 module.exports = {
   index,
   show,
@@ -79,4 +91,5 @@ module.exports = {
   create,
   update,
   destroy,
+  destroyToken
 };

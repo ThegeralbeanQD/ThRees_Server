@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "setup-db": "node ./database/setup.js"
+    "setup-db": "node ./database/setup.js",
+    "test": "jest --watchAll"
+
   },
   "keywords": [],
   "author": "",
@@ -23,6 +25,8 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "jest": "^29.5.0",
+    "nodemon": "^2.0.22",
+    "supertest": "^6.3.3"
   }
 }

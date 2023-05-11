@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const { create } = require('../controllers/usersController');
+const { create } = require('../controllers/UsersController');
 
 // Set up Multer for handling file uploads- honestly so confused about all of this 
 const storage = multer.memoryStorage();

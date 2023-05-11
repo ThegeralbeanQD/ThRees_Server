@@ -1,14 +1,16 @@
 const { Router } = require("express");
 const upload = require("../middleware/upload");
+const authenticator = require("../middleware/authenticator");
 
 const postsController = require("../controllers/postsController");
+
 
 const postsRouter = Router();
 
 postsRouter
     .route("/")
     .get(postsController.index)
-    .post(upload, postsController.create);
+    .post(upload, authenticator, postsController.create);
 
 postsRouter
     .route("/:id")

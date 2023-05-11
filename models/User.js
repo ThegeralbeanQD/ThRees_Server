@@ -2,16 +2,16 @@ const db = require('../database/connect');
 
 class Users {
 
-    constructor({ user_id, user_name, user_postcode, user_password, user_profile_pic }) {
+    constructor({ user_id, user_username, user_postcode, user_password, user_profile_pic }) {
         this.id = user_id;
-        this.name = user_name;
+        this.username = user_username;
         this.postcode = user_postcode;
         this.password = user_password;
         this.profile_pic = user_profile_pic;
     }
 
     static async getAll() {
-        const response = await db.query("SELECT * FROM users ORDER BY user_name");
+        const response = await db.query("SELECT * FROM users");
         return response.rows.map(u => new Users(u));
     }
 
@@ -24,7 +24,7 @@ class Users {
     }
 
     static async getByUsername(username) {
-        const response = await db.query("SELECT * FROM users WHERE user_name = $1", [username]);
+        const response = await db.query("SELECT * FROM users WHERE user_username = $1", [username]);
         if (response.rows.length != 1) {
             throw new Error("Unable to locate user.")
         }
@@ -32,9 +32,9 @@ class Users {
     }
 
     static async create(data) {
-        const { name, postcode, password, profile_pic } = data;
-        let response = await db.query("INSERT INTO users (user_name, user_postcode, user_password, user_profile_pic) VALUES ($1, $2, $3, $4) RETURNING user_id;",
-            [name, postcode, password, profile_pic]);
+        const { username, password } = data;
+        let response = await db.query("INSERT INTO users (user_username, user_password) VALUES ($1, $2) RETURNING user_id;",
+            [username, password]);
         const newId = response.rows[0].user_id;
         const newUser = await Users.getOneById(newId);
         return newUser;

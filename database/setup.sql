@@ -19,7 +19,7 @@ CREATE TABLE users (
 CREATE TABLE posts (
     post_id INT GENERATED ALWAYS AS IDENTITY,
     post_title VARCHAR (100) NOT NULL,
-    post_content VARCHAR (100) NOT NULL,
+    post_content VARCHAR (500) NOT NULL,
     post_category VARCHAR (100) NOT NULL,
     post_image bytea,
     post_time TIME DEFAULT CURRENT_TIME,
@@ -80,13 +80,13 @@ VALUES
 ('Third User', 'pass3', 'PCODE3'),
 ('Forth User', 'pass3', 'PCODE4');
 
-INSERT INTO posts (post_title, post_content, post_category, post_image, post_user_id)
-VALUES 
-('How to Recycle Electronic Devices', 'CONTENT 2', 'Environment', 'electronics-recycling.jpg', 1),
-('Recycling 101: The Basics', 'CONTENT 2', 'Paper', 'paper.jpg', 2),
-('The Benefits of Composting', 'CONTENT 3', 'Gardening', 'composting.jpg', 1),
-('How to Recycle Plastic Bottles', 'CONTENT 4', 'Environment', 'plastic-bottles.jpg', 3),
-('Creative Ideas for Upcycling', 'CONTENT 5', 'DIY', 'upcycling.jpg', 3);
+-- INSERT INTO posts (post_title, post_content, post_category, post_image, post_user_id)
+-- VALUES 
+-- ('How to Recycle Electronic Devices', 'CONTENT 2', 'Environment', 'electronics-recycling.jpg', 1),
+-- ('Recycling 101: The Basics', 'CONTENT 2', 'Paper', 'paper.jpg', 2),
+-- ('The Benefits of Composting', 'CONTENT 3', 'Gardening', 'composting.jpg', 1),
+-- ('How to Recycle Plastic Bottles', 'CONTENT 4', 'Environment', 'plastic-bottles.jpg', 3),
+-- ('Creative Ideas for Upcycling', 'CONTENT 5', 'DIY', 'upcycling.jpg', 3);
 
 INSERT INTO wastes (waste_postcode)
 VALUES 

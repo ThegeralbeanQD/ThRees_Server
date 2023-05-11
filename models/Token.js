@@ -36,6 +36,14 @@ class Token {
         }
     }
 
+    static async destroy(token) {
+        const response = await db.query("DELETE FROM tokens WHERE token_token = $1 RETURNING *;", [token]);
+        if (response.rows.length != 1) {
+            throw new Error("Cannot delete token.");
+        }
+        return new Token(response.rows[0]);
+    }
+
 }
 
 module.exports = Token;

@@ -39,6 +39,7 @@ async function update (req, res) {
     try {
         const userInput = req.params.postcode;
         const postcode = await Waste.correctPostcode(userInput);
+        // console.log(postcode);
         const id = await Waste.getId(postcode);
         const data = req.body;
         const waste = await Waste.update(data, id);
